@@ -1,0 +1,38 @@
+---
+import Header from "@components/Header.astro";
+import Layout from "@layouts/Layout.astro";
+import StackView from "@components/stack/StackView";
+import { fetchBooks } from "@data/api";
+import type { Book } from "@/types";
+
+const books: Book[] = (await fetchBooks()) || [];
+---
+
+<Layout title="Digital Library">
+  <main>
+    <Header />
+    <StackView client:load bks={books} />
+  </main>
+</Layout>
+
+<!-- <footer>
+  <div class="right">
+    <h2 class="btn btn-white-50">You are now exploring Stack 2</h2>
+  </div>
+</footer> -->
+
+<style>
+  main {
+    margin: auto;
+    width: 100svw;
+    color: white;
+    line-height: 1.6;
+  }
+
+  footer {
+    display: flex;
+    padding: 1rem;
+    position: absolute;
+    bottom: 1rem;
+  }
+</style>

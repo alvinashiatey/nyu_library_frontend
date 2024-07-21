@@ -1,0 +1,98 @@
+---
+import Layout from "@layouts/Layout.astro";
+import BookList from "@components/BookList.astro";
+import { fetchBooks } from "@data/api";
+import type { Book } from "@/types";
+
+const books: Book[] = (await fetchBooks()) || [];
+---
+
+<Layout title="Digital Library">
+  <main>
+    <header>
+      <div class="left">
+        <a href="/" class="btn btn-black">OFFICE00</a>
+      </div>
+
+      <div class="center">
+        <h1>Books</h1>
+      </div>
+
+      <div class="right">
+        <a href="" class="btn-svg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <div class="filter-container">
+      <div class="filter">
+        <select name="filter" id="filter">
+          <option value="Filter">Filter</option>
+        </select>
+      </div>
+
+      <div class="sort">
+        <select name="sort" id="sort">
+          <option value="Sort">Sort</option>
+        </select>
+      </div>
+    </div>
+
+    <BookList books={books} />
+  </main>
+</Layout>
+
+<style>
+  main {
+    margin: auto;
+    width: 100svw;
+    line-height: 1.6;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  .filter-container {
+    display: flex;
+    gap: 1rem;
+    padding-inline: 1rem;
+
+    select {
+      padding-inline: 0.5rem;
+      border-radius: 0.5rem;
+      border: none;
+    }
+  }
+
+  .btn-svg {
+    width: 100%;
+    height: 100%;
+
+    svg {
+      border-radius: 0.5rem;
+      background-color: black;
+      width: 2rem;
+      height: 2rem;
+      fill: none;
+      stroke: beige;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  }
+</style>

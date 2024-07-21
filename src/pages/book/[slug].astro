@@ -1,0 +1,106 @@
+---
+import type { InferGetStaticParamsType } from "astro";
+import Layout from "@layouts/Layout.astro";
+import { fetchBooks } from "@data/api";
+import type { Book } from "@/types";
+
+export async function getStaticPaths() {
+  const books = await fetchBooks();
+  return books?.map((book: Book) => ({
+    params: { slug: book.slug },
+    props: { book },
+  }));
+}
+
+type Params = InferGetStaticParamsType<typeof getStaticPaths>;
+const { slug } = Astro.params as Params;
+const { book } = Astro.props as { book: Book };
+---
+
+<Layout title="Digital Library">
+  <main>
+    <header>
+      <div class="left">
+        <a href="/" class="btn btn-black">OFFICE00</a>
+      </div>
+
+      <div class="center">
+        <h1>{book?.title}</h1>
+      </div>
+
+      <div class="right">
+        <button id="hypothesis">Annotate</button>
+      </div>
+    </header>
+    <div class="pdf">
+      <div class="pdf__wrapper">
+        <iframe
+          id="frame__embed"
+          src={book?.files[1].url}
+          width="100%"
+          height="100%"></iframe>
+      </div>
+
+      <div class="pdf__panel"></div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const iframe = document.getElementById("frame__embed") as HTMLIFrameElement;
+  const button = document.getElementById("hypothesis") as HTMLButtonElement;
+  button?.addEventListener("click", () => {
+    const url = iframe.src;
+    if (url.includes("https://via.hypothes.is/")) {
+      iframe.src = url.replace("https://via.hypothes.is/", "");
+    } else {
+      iframe.src = "https://via.hypothes.is/" + url;
+    }
+  });
+</script>
+
+<style>
+  body {
+    overflow: hidden;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    height: 3.5rem;
+
+    button {
+      padding: 0.5rem 1rem;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  }
+
+  .pdf {
+    display: flex;
+    gap: 1rem;
+    .pdf__wrapper {
+      width: 100%;
+      height: 100%;
+      padding-inline: 1rem;
+      padding-block-start: 1rem;
+      background-color: gray;
+
+      iframe {
+        width: 100%;
+        height: calc(100vh - 3.5rem - 1rem);
+        border: none;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+    .pdf__panel {
+      width: 30%;
+      padding: 1rem;
+      background-color: var(--color-bg);
+    }
+  }
+</style>

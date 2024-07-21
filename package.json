@@ -1,0 +1,23 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.8.2",
+    "@astrojs/solid-js": "^4.4.0",
+    "astro": "^4.12.2",
+    "solid-js": "^1.8.17",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.11",
+    "prettier": "^3.2.5"
+  }
+}

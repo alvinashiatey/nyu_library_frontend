@@ -1,0 +1,18 @@
+---
+import type { Book } from "@/types";
+import BookCard from "./BookCard.astro";
+const { books } = Astro.props as { books: Book[] };
+---
+
+<div class="books">
+  {books.map((book) => <BookCard book={book} />)}
+</div>
+
+<style>
+  .books {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+</style>
