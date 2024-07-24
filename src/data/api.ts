@@ -1,5 +1,9 @@
 import type { Book, About, ApiResponse } from "@/types.ts";
-const api = "http://localhost:3000/api/query";
+
+const api =
+  process.env.NODE_ENV === "PROD"
+    ? "https://criticismvalue.frb.io/api/query"
+    : "http://localhost:3000/api/query";
 
 const username = import.meta.env.VITE_API_USERNAME;
 const password = import.meta.env.VITE_API_PASSWORD;
