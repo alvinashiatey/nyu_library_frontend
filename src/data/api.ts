@@ -26,7 +26,7 @@ export const fetchQuery = async (body: {}): Promise<ApiResponse> => {
     return await response.json();
   } catch (error) {
     console.error(error);
-    throw error; // Optional: re-throw the error if needed
+    throw error;
   }
 };
 
@@ -49,7 +49,7 @@ export async function fetchBooks(): Promise<Book[]> {
 
   try {
     const response = await fetchQuery({ query, select });
-
+    console.log(response);
     if (response && response.code === 200) {
       return response.result as Book[];
     }
@@ -57,7 +57,7 @@ export async function fetchBooks(): Promise<Book[]> {
     return [];
   } catch (error) {
     console.error(error);
-    throw error; // Optional: re-throw the error if needed
+    throw error;
   }
 }
 
@@ -78,6 +78,6 @@ export async function fetchAbout(): Promise<About | null> {
     return null;
   } catch (error) {
     console.error(error);
-    throw error; // Optional: re-throw the error if needed
+    throw error;
   }
 }
