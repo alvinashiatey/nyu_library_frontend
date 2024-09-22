@@ -1,0 +1,64 @@
+---
+import Layout from "@layouts/Layout.astro";
+---
+
+<Layout title="Gallery">
+  <main>
+    <header>
+      <div class="left">
+        <a href="/" class="btn btn-black">OFFICE00</a>
+      </div>
+
+      <div class="center">
+        <h1>Books</h1>
+      </div>
+
+      <div class="right">
+        <a href="" class="btn-svg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <div class="filter-container">
+      <div class="filter">
+        <select name="filter" id="filter">
+          <option value="Filter">Filter</option>
+        </select>
+      </div>
+
+      <div class="sort">
+        <select name="sort" id="sort">
+          <option value="Sort">Sort</option>
+        </select>
+      </div>
+    </div>
+
+    <p>Gallery</p>
+  </main>
+</Layout>
+
+<style>
+  main {
+    margin: auto;
+    width: 100svw;
+    line-height: 1.6;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+</style>

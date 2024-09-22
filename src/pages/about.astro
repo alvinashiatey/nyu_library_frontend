@@ -1,0 +1,46 @@
+---
+import Header from "@components/Header.astro";
+import Layout from "@layouts/Layout.astro";
+import { fetchAbout } from "@data/api";
+
+const about = await fetchAbout();
+---
+
+<Layout title="About">
+  <main>
+    <Header />
+
+    <section class="content">
+      <Fragment set:html={about?.text} />
+    </section>
+  </main>
+</Layout>
+
+<script></script>
+
+<style>
+  main {
+    margin: auto;
+    width: 100svw;
+    color: black;
+    line-height: 1.6;
+
+    section.content {
+      padding-block-start: 4rem;
+      padding-inline: 1rem;
+      width: 60%;
+
+      p + p {
+        /* margin-block-start: 1rem; */
+        text-indent: 2rem;
+      }
+    }
+  }
+
+  footer {
+    display: flex;
+    padding: 1rem;
+    position: absolute;
+    bottom: 1rem;
+  }
+</style>
