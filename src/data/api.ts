@@ -49,7 +49,6 @@ export async function fetchBooks(): Promise<Book[]> {
 
   try {
     const response = await fetchQuery({ query, select });
-    console.log(response);
     if (response && response.code === 200) {
       return response.result as Book[];
     }
