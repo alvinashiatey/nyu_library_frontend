@@ -15,6 +15,8 @@ export async function getStaticPaths() {
 type Params = InferGetStaticParamsType<typeof getStaticPaths>;
 const { slug } = Astro.params as Params;
 const { book } = Astro.props as { book: Book };
+const pdfUrl = book?.files[1].url;
+const WORKER_PATH = "//unpkg.com/pdfjs-dist@4.0.269/build/pdf.worker.min.mjs";
 ---
 
 <Layout title="Digital Library">
@@ -33,74 +35,97 @@ const { book } = Astro.props as { book: Book };
       </div>
     </header>
     <div class="pdf">
-      <div class="pdf__wrapper">
-        <iframe
-          id="frame__embed"
-          src={book?.files[1].url}
-          width="100%"
-          height="100%"></iframe>
-      </div>
-
-      <div class="pdf__panel"></div>
+      <h1>PDF.js example</h1>
+      <pdf-viewer data-pdf-path={pdfUrl} data-worker-path={WORKER_PATH}>
+      </pdf-viewer>
     </div>
   </main>
 </Layout>
 
+<script src="@ts/annotate.ts"></script>
+
+<script
+  is:inline
+  src="https://unpkg.com/pdfjs-dist@4.0.269/build/pdf.min.mjs"
+  type="module"></script>
+
 <script>
-  const iframe = document.getElementById("frame__embed") as HTMLIFrameElement;
-  const button = document.getElementById("hypothesis") as HTMLButtonElement;
-  button?.addEventListener("click", () => {
-    const url = iframe.src;
-    if (url.includes("https://via.hypothes.is/")) {
-      iframe.src = url.replace("https://via.hypothes.is/", "");
-    } else {
-      iframe.src = "https://via.hypothes.is/" + url;
-    }
-  });
-</script>
+  import type { PDFDocumentLoadingTask } from "pdfjs-dist";
 
-<style>
-  body {
-    overflow: hidden;
-  }
-  header {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-    height: 3.5rem;
-
-    button {
-      padding: 0.5rem 1rem;
-      background-color: black;
-      color: white;
-      border: none;
-      border-radius: 0.25rem;
-      cursor: pointer;
-      font-size: 1rem;
+  declare global {
+    interface Window {
+      pdfjsLib?: any;
     }
   }
 
-  .pdf {
-    display: flex;
-    gap: 1rem;
-    .pdf__wrapper {
-      width: 100%;
-      height: 100%;
-      padding-inline: 1rem;
-      padding-block-start: 1rem;
-      background-color: gray;
+  class PDFViewer extends HTMLElement {
+    pdfPath;
+    workerPath;
+    loadingTask: PDFDocumentLoadingTask | null = null;
+    canvas;
 
-      iframe {
-        width: 100%;
-        height: calc(100vh - 3.5rem - 1rem);
-        border: none;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this.pdfPath = this.getAttribute("data-pdf-path");
+      this.workerPath = this.getAttribute("data-worker-path");
+      this.canvas = document.createElement("canvas");
+      this.canvas.setAttribute("id", "pdf-canvas");
+      this.canvas.style.border = "1px solid black";
+      this.canvas.style.direction = "ltr";
+
+      this.shadowRoot?.append(this.canvas);
+    }
+
+    async load() {
+      if (!this.loadingTask) return;
+
+      const pdfDocument = await this.loadingTask.promise;
+      // Request a first page
+      const pdfPage = await pdfDocument.getPage(1);
+
+      // Total Pages
+      const numPages = pdfDocument.numPages;
+      console.log(`Number of Pages: ${numPages}`);
+
+      // Display page on the existing canvas with 100% scale.
+      const viewport = pdfPage.getViewport({ scale: 1.0 });
+      const ctx = this.canvas.getContext("2d");
+
+      if (!this.canvas || !ctx) {
+        return;
       }
+
+      this.canvas.width = viewport.width;
+      this.canvas.height = viewport.height;
+
+      // Render PDF page into canvas context
+      const renderTask = pdfPage.render({
+        canvasContext: ctx,
+        viewport,
+      });
+      await renderTask.promise;
     }
-    .pdf__panel {
-      width: 30%;
-      padding: 1rem;
-      background-color: var(--color-bg);
+
+    handleLoaded() {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = this.workerPath;
+      this.loadingTask = window.pdfjsLib.getDocument(this.pdfPath);
+      this.load();
+    }
+
+    connectedCallback() {
+      if (!this.pdfPath || !this.workerPath) return;
+
+      window.addEventListener("DOMContentLoaded", this.handleLoaded.bind(this));
+    }
+
+    disconnectedCallback() {
+      window.removeEventListener(
+        "DOMContentLoaded",
+        this.handleLoaded.bind(this)
+      );
     }
   }
-</style>
+
+  customElements.define("pdf-viewer", PDFViewer);
+</script>
