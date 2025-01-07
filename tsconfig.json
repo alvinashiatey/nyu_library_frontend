@@ -1,6 +1,15 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "isolatedModules": true,
     "paths": {
       "@components/*": [
         "src/components/*"
@@ -14,9 +23,15 @@
       "@/*": [
         "src/*"
       ],
+      "@js/*": [
+        "src/js/*"
+      ],
       "@ts/*": [
         "src/ts/*"
-      ]
+      ],
+      "@css/*": [
+        "src/css/*"
+      ],
     },
     "jsx": "preserve",
     "jsxImportSource": "solid-js"

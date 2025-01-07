@@ -3,6 +3,7 @@ import type { InferGetStaticParamsType } from "astro";
 import Layout from "@layouts/Layout.astro";
 import { fetchBooks } from "@data/api";
 import type { Book } from "@/types";
+import PDFViewerApp from "@/pages/viewer";
 
 export async function getStaticPaths() {
   const books = await fetchBooks();
@@ -16,7 +17,7 @@ type Params = InferGetStaticParamsType<typeof getStaticPaths>;
 const { slug } = Astro.params as Params;
 const { book } = Astro.props as { book: Book };
 const pdfUrl = book?.files[1].url;
-const WORKER_PATH = "//unpkg.com/pdfjs-dist@4.0.269/build/pdf.worker.min.mjs";
+const workerPath = "//unpkg.com/pdfjs-dist/build/pdf.worker.min.mjs";
 ---
 
 <Layout title="Digital Library">
@@ -35,97 +36,28 @@ const WORKER_PATH = "//unpkg.com/pdfjs-dist@4.0.269/build/pdf.worker.min.mjs";
       </div>
     </header>
     <div class="pdf">
-      <h1>PDF.js example</h1>
-      <pdf-viewer data-pdf-path={pdfUrl} data-worker-path={WORKER_PATH}>
-      </pdf-viewer>
+      <PDFViewerApp client:load pdfFilePath={pdfUrl} />
+      <h1>PDF Viewer</h1>
+      <div id="viewerContainer" data-pdf={pdfUrl} data-worker={workerPath}>
+        <div id="pdfViewer" class="pdfViewer"></div>
+      </div>
     </div>
   </main>
 </Layout>
 
-<script src="@ts/annotate.ts"></script>
+<script type="module" src="@ts/annotate.ts"></script>
+<!-- <script src="@ts/pdfViewerSetup.ts"></script> -->
 
-<script
-  is:inline
-  src="https://unpkg.com/pdfjs-dist@4.0.269/build/pdf.min.mjs"
-  type="module"></script>
-
-<script>
-  import type { PDFDocumentLoadingTask } from "pdfjs-dist";
-
-  declare global {
-    interface Window {
-      pdfjsLib?: any;
-    }
+<style>
+  #viewerContainer {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+    background: #ccc;
   }
 
-  class PDFViewer extends HTMLElement {
-    pdfPath;
-    workerPath;
-    loadingTask: PDFDocumentLoadingTask | null = null;
-    canvas;
-
-    constructor() {
-      super();
-      this.attachShadow({ mode: "open" });
-      this.pdfPath = this.getAttribute("data-pdf-path");
-      this.workerPath = this.getAttribute("data-worker-path");
-      this.canvas = document.createElement("canvas");
-      this.canvas.setAttribute("id", "pdf-canvas");
-      this.canvas.style.border = "1px solid black";
-      this.canvas.style.direction = "ltr";
-
-      this.shadowRoot?.append(this.canvas);
-    }
-
-    async load() {
-      if (!this.loadingTask) return;
-
-      const pdfDocument = await this.loadingTask.promise;
-      // Request a first page
-      const pdfPage = await pdfDocument.getPage(1);
-
-      // Total Pages
-      const numPages = pdfDocument.numPages;
-      console.log(`Number of Pages: ${numPages}`);
-
-      // Display page on the existing canvas with 100% scale.
-      const viewport = pdfPage.getViewport({ scale: 1.0 });
-      const ctx = this.canvas.getContext("2d");
-
-      if (!this.canvas || !ctx) {
-        return;
-      }
-
-      this.canvas.width = viewport.width;
-      this.canvas.height = viewport.height;
-
-      // Render PDF page into canvas context
-      const renderTask = pdfPage.render({
-        canvasContext: ctx,
-        viewport,
-      });
-      await renderTask.promise;
-    }
-
-    handleLoaded() {
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc = this.workerPath;
-      this.loadingTask = window.pdfjsLib.getDocument(this.pdfPath);
-      this.load();
-    }
-
-    connectedCallback() {
-      if (!this.pdfPath || !this.workerPath) return;
-
-      window.addEventListener("DOMContentLoaded", this.handleLoaded.bind(this));
-    }
-
-    disconnectedCallback() {
-      window.removeEventListener(
-        "DOMContentLoaded",
-        this.handleLoaded.bind(this)
-      );
-    }
+  .pdfViewer {
+    width: 100%;
   }
-
-  customElements.define("pdf-viewer", PDFViewer);
-</script>
+</style>
