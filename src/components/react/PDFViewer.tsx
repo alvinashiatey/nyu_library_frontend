@@ -14,19 +14,16 @@ function PDFViewer({ file }: PDFViewerProps) {
   const [pageNumber, setPageNumber] = useState<number>(1);
 
   useEffect(() => {
-    // Get the page number from URL on mount
     const url = new URL(window.location.href);
     const urlPage = url.searchParams.get("page");
     if (urlPage) {
       const pageNum = parseInt(urlPage);
-      // Only set if it's a valid page number
       if (!isNaN(pageNum) && pageNum > 0) {
         setPageNumber(pageNum);
       }
     }
   }, []);
 
-  // Update URL when value changes
   const updateURL = (newValue: number) => {
     const url = new URL(window.location.href);
     url.searchParams.set("page", newValue.toString());
@@ -35,7 +32,6 @@ function PDFViewer({ file }: PDFViewerProps) {
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
-    // If the URL page is greater than numPages, reset to last page
     const urlPage = parseInt(
       new URL(window.location.href).searchParams.get("page") || "1"
     );
