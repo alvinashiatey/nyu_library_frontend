@@ -3,7 +3,7 @@ import type { InferGetStaticParamsType } from "astro";
 import Layout from "@layouts/Layout.astro";
 import { fetchBooks } from "@data/api";
 import type { Book } from "@/types";
-import PDFViewerApp from "@/pages/viewer";
+import PDFViewer from "@components/react/PDFViewer";
 
 export async function getStaticPaths() {
   const books = await fetchBooks();
@@ -17,7 +17,6 @@ type Params = InferGetStaticParamsType<typeof getStaticPaths>;
 const { slug } = Astro.params as Params;
 const { book } = Astro.props as { book: Book };
 const pdfUrl = book?.files[1].url;
-const workerPath = "//unpkg.com/pdfjs-dist/build/pdf.worker.min.mjs";
 ---
 
 <Layout title="Digital Library">
@@ -36,16 +35,15 @@ const workerPath = "//unpkg.com/pdfjs-dist/build/pdf.worker.min.mjs";
       </div>
     </header>
     <div class="pdf">
-      <PDFViewerApp client:load pdfFilePath={pdfUrl} />
       <h1>PDF Viewer</h1>
-      <div id="viewerContainer" data-pdf={pdfUrl} data-worker={workerPath}>
-        <div id="pdfViewer" class="pdfViewer"></div>
+      <div id="viewerContainer" data-pdf={pdfUrl}>
+          <PDFViewer file={pdfUrl} client:only="react" />
       </div>
     </div>
   </main>
 </Layout>
 
-<script type="module" src="@ts/annotate.ts"></script>
+<script src="@ts/annotate.ts"></script>
 <!-- <script src="@ts/pdfViewerSetup.ts"></script> -->
 
 <style>

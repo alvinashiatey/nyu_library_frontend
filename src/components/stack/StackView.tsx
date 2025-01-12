@@ -1,4 +1,4 @@
-import { type Component, For, createSignal, createComputed } from "solid-js";
+import React, { useState, useEffect } from "react";
 import styles from "./StackView.module.css";
 import type { Book } from "@/types";
 
@@ -6,34 +6,30 @@ interface StackViewProps {
   bks: Book[];
 }
 
-const StackView: Component<StackViewProps> = (props) => {
-  const { bks } = props as { bks: Book[] };
-  const [books, setBooks] = createSignal<Book[]>([]);
+const StackView: React.FC<StackViewProps> = ({ bks }) => {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [loading, setLoading] = createSignal(true);
-
-  createComputed(() => {
+  useEffect(() => {
     if (bks.length) {
       setBooks(bks);
       setLoading(false);
     }
-  });
+  }, [bks]);
 
   return (
     <div>
-      {loading() ? (
+      {loading ? (
         <div>Loading...</div>
       ) : (
-        <div class={styles.books}>
+        <div className={styles.books}>
           <h1>Stack</h1>
-          <For each={books()}>
-            {(book) => (
-              <div>
-                <h2>{book.title}</h2>
-                <p>{book.description}</p>
-              </div>
-            )}
-          </For>
+          {books.map((book) => (
+            <div key={book.title}>
+              <h2>{book.title}</h2>
+              <p>{book.description}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>

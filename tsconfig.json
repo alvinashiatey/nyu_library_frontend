@@ -23,18 +23,15 @@
       "@/*": [
         "src/*"
       ],
-      "@js/*": [
-        "src/js/*"
-      ],
       "@ts/*": [
         "src/ts/*"
       ],
       "@css/*": [
         "src/css/*"
-      ],
+      ]
     },
-    "jsx": "preserve",
-    "jsxImportSource": "solid-js"
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
   },
   "extends": "astro/tsconfigs/strict"
 }
