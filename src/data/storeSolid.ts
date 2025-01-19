@@ -1,11 +1,11 @@
-import { createStore } from "solid-js/store";
+import { useState, useCallback } from "react";
 import type { Book } from "@/types";
 import { fetchQuery } from "@/data/api";
 
 const useStore = () => {
-  const [books, setBooks] = createStore<Book[]>([]);
+  const [books, setBooks] = useState<Book[]>([]);
 
-  const getBooks = async () => {
+  const getBooks = useCallback(async () => {
     const query = "page('books').children.sortBy('date', 'desc')";
     const select = {
       title: true,
@@ -34,7 +34,7 @@ const useStore = () => {
       console.error(error);
       throw error;
     }
-  };
+  }, []);
 
   return {
     books,
