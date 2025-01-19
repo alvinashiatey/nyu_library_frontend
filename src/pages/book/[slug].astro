@@ -31,13 +31,12 @@ const pdfUrl = book?.files[1].url;
       </div>
 
       <div class="right">
-        <button id="hypothesis">Annotate</button>
+        <button class="btn btn-black" id="hypothesis">Annotate</button>
       </div>
     </header>
     <div class="pdf">
-      <h1>PDF Viewer</h1>
       <div id="viewerContainer" data-pdf={pdfUrl}>
-          <PDFViewer file={pdfUrl} client:only="react" />
+        <PDFViewer file={pdfUrl} client:only="react" />
       </div>
     </div>
   </main>
@@ -57,5 +56,16 @@ const pdfUrl = book?.files[1].url;
 
   .pdfViewer {
     width: 100%;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  #viewerContainer {
+    display: grid;
+    place-content: center;
   }
 </style>

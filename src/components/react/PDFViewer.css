@@ -1,0 +1,18 @@
+.page-details {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-inline: 1rem;
+  padding-block: 0.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: gray;
+}
+
+.page-nav {
+  width: 10%;
+  display: flex;
+  justify-content: space-between;
+}

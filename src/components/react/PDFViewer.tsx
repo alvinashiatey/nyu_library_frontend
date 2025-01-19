@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
+import "./PDFViewer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -61,23 +62,30 @@ function PDFViewer({ file }: PDFViewerProps) {
 
   return (
     <div>
+      <div className="page-details">
+        <div className="page-nav">
+          <button
+            className="btn"
+            onClick={goToPreviousPage}
+            disabled={pageNumber === 1}
+          >
+            Previous
+          </button>
+          <button
+            onClick={goToNextPage}
+            className="btn btn-white"
+            disabled={numPages ? pageNumber === numPages : false}
+          >
+            Next
+          </button>
+        </div>
+        <p className="page-info">
+          Page {pageNumber} of {numPages}
+        </p>
+      </div>
       <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
         <Page pageNumber={pageNumber} />
       </Document>
-      <div>
-        <button onClick={goToPreviousPage} disabled={pageNumber === 1}>
-          Previous
-        </button>
-        <button
-          onClick={goToNextPage}
-          disabled={numPages ? pageNumber === numPages : false}
-        >
-          Next
-        </button>
-      </div>
-      <p>
-        Page {pageNumber} of {numPages}
-      </p>
     </div>
   );
 }
