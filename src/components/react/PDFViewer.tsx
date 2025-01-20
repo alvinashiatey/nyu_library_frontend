@@ -65,7 +65,7 @@ function PDFViewer({ file }: PDFViewerProps) {
       <div className="page-details">
         <div className="page-nav">
           <button
-            className="btn"
+            className="btn btn-white"
             onClick={goToPreviousPage}
             disabled={pageNumber === 1}
           >

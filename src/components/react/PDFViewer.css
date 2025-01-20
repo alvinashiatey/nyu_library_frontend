@@ -11,7 +11,12 @@
 .page-nav {
   width: fit-content;
   display: flex;
-  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.btn-white[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .pdf-document {
