@@ -1,18 +1,22 @@
 .page-details {
-  position: absolute;
-  top: 0;
-  left: 0;
   padding-inline: 1rem;
   padding-block: 0.5rem;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: gray;
+  background: rgba(227, 227, 227, 0.569);
 }
 
 .page-nav {
-  width: 10%;
+  width: fit-content;
   display: flex;
   justify-content: space-between;
+}
+
+.pdf-document {
+  background-color: #ccc;
+  width: 100%;
+  display: grid;
+  place-content: center;
 }

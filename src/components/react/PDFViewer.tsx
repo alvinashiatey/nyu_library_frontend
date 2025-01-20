@@ -83,9 +83,11 @@ function PDFViewer({ file }: PDFViewerProps) {
           Page {pageNumber} of {numPages}
         </p>
       </div>
-      <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-        <Page pageNumber={pageNumber} />
-      </Document>
+      <div className="pdf-document">
+        <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+          <Page pageNumber={pageNumber} />
+        </Document>
+      </div>
     </div>
   );
 }
