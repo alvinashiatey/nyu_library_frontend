@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import "./PDFViewer.css";
+import styles from "./PDFViewer.module.css";
+import PageNavigationForm from "./PageNavigationForm";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -60,30 +61,58 @@ function PDFViewer({ file }: PDFViewerProps) {
     });
   }
 
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        goToPreviousPage();
+      } else if (event.key === "ArrowRight") {
+        goToNextPage();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [numPages, pageNumber]); // Dependencies ensure we have access to latest state
+
+  const handlePageSubmit = (pageNum: number) => {
+    setPageNumber(pageNum);
+    updateURL(pageNum);
+  };
+
   return (
-    <div>
-      <div className="page-details">
-        <div className="page-nav">
+    <div className={styles[".document-container"]}>
+      <div className={styles["page-details"]}>
+        <div className={styles["page-nav"]}>
           <button
-            className="btn btn-white"
+            className="btn btn-black"
             onClick={goToPreviousPage}
             disabled={pageNumber === 1}
           >
-            Previous
+            ← Prev
           </button>
           <button
             onClick={goToNextPage}
-            className="btn btn-white"
+            className="btn btn-black"
             disabled={numPages ? pageNumber === numPages : false}
           >
-            Next
+            Next →
           </button>
         </div>
-        <p className="page-info">
-          Page {pageNumber} of {numPages}
-        </p>
+        <div className="top-info">
+          <p className={styles["page-info"]}>
+            Page {pageNumber} of {numPages}
+          </p>
+          <PageNavigationForm
+            numPages={numPages}
+            onPageSubmit={handlePageSubmit}
+          />
+        </div>
       </div>
-      <div className="pdf-document">
+      <div className={styles["pdf-document"]}>
         <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
           <Page pageNumber={pageNumber} />
         </Document>
