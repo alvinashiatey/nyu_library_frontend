@@ -6,7 +6,7 @@ import type { Book } from "@/types";
 
 export async function getStaticPaths() {
   const books = await fetchBooks();
-  
+
   const booksByStack = books.reduce<Record<string, Book[]>>((acc, book) => {
     (acc[book.stack] ??= []).push(book);
     return acc;
@@ -14,15 +14,25 @@ export async function getStaticPaths() {
 
   return Object.entries(booksByStack).map(([stack, books]) => ({
     params: { slug: stack },
-    props: { books, stack }
+    props: { books, stack },
   }));
 }
 
-
 const { books, stack } = Astro.props as { books: Book[]; stack: string };
+const paddedStack = Number(stack) < 10 ? `0${stack}` : stack;
 ---
 
 <Layout title={`Stack ${stack} - Digital Library`}>
+  <header>
+    <div class="range">
+      <h2>
+        Range <span class="text-white-50">{paddedStack}</span>
+      </h2>
+    </div>
+    <div class="back">
+      <a href="/" class="btn btn-black">x</a>
+    </div>
+  </header>
   <main>
     <StackView bks={books} stack={stack} client:load />
   </main>
@@ -40,6 +50,15 @@ const { books, stack } = Astro.props as { books: Book[]; stack: string };
     width: 100svw;
     color: white;
     line-height: 1.6;
+  }
+
+  header {
+    position: fixed;
+    width: 100svw;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    z-index: 1000;
   }
 
   footer {
