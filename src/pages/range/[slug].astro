@@ -1,17 +1,30 @@
 ---
-import Header from "@components/Header.astro";
 import Layout from "@layouts/Layout.astro";
 import StackView from "@components/stack/StackView";
 import { fetchBooks } from "@data/api";
 import type { Book } from "@/types";
 
-const books: Book[] = (await fetchBooks()) || [];
+export async function getStaticPaths() {
+  const books = await fetchBooks();
+  
+  const booksByStack = books.reduce<Record<string, Book[]>>((acc, book) => {
+    (acc[book.stack] ??= []).push(book);
+    return acc;
+  }, {});
+
+  return Object.entries(booksByStack).map(([stack, books]) => ({
+    params: { slug: stack },
+    props: { books, stack }
+  }));
+}
+
+
+const { books, stack } = Astro.props as { books: Book[]; stack: string };
 ---
 
-<Layout title="Digital Library">
+<Layout title={`Stack ${stack} - Digital Library`}>
   <main>
-    <Header />
-    <StackView client:load bks={books} />
+    <StackView bks={books} stack={stack} client:load />
   </main>
 </Layout>
 
