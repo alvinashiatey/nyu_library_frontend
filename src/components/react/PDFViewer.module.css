@@ -23,29 +23,60 @@
 .page-nav {
   position: absolute;
   padding-inline: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 90%;
+  /* transform: translateX(-50%); */
+  /* transform: translateY(-50%); */
   left: 0;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  place-content: center;
   gap: 0.5rem;
+  z-index: 500;
 }
 
-.pdf-document {
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #bebebe10;
+  backdrop-filter: blur(5px);
+  border-radius: 4px;
+}
+
+/* Add these new classes for nav-controls visibility */
+.visible {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.hidden {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.nav-controls:hover {
+  opacity: 1;
+}
+
+.pdf-wrapper {
   width: 100%;
   height: calc(100vh - 5rem);
   overflow: scroll;
   display: flex;
   justify-content: center;
-  padding-block: 1rem;
+}
+
+.pdf-document {
+  width: 100%;
+  height: inherit;
+  padding: 1rem;
 }
 
 .form {
   position: absolute;
   padding-inline: 1rem;
   padding-block: 0.5rem;
-  right: 0;
+  left: 0;
   width: fit-content;
 }
 

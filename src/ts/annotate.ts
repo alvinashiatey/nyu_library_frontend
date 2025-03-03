@@ -33,11 +33,6 @@ function innitAnnotate() {
       script.src = "https://hypothes.is/embed.js";
       script.async = true;
       document.body.appendChild(script);
-
-      // Set up observer to detect when hypothesis sidebar appears
-      setTimeout(() => {
-        setupHypothesisSidebarObserver();
-      }, 15000);
     }
   });
 }

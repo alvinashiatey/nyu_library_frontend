@@ -22,8 +22,7 @@ function PDFViewer({ file }: PDFViewerProps) {
   const [containerHeight, setContainerHeight] =
     useState<string>("calc(100vh - 5rem)");
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [hypothesisSidebarWidth, setHypothesisSidebarWidth] =
-    useState<number>(0);
+  const [isHovering, setIsHovering] = useState<boolean>(false);
 
   useEffect(() => {
     const calculateHeight = () => {
@@ -67,6 +66,14 @@ function PDFViewer({ file }: PDFViewerProps) {
     const url = new URL(window.location.href);
     url.searchParams.set("page", newValue.toString());
     window.history.pushState({}, "", url);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
   };
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
@@ -120,58 +127,33 @@ function PDFViewer({ file }: PDFViewerProps) {
     updateURL(pageNum);
   };
 
-  useEffect(() => {
-    // Function to read and update the hypothesis sidebar width state
-    const checkSidebarWidth = () => {
-      const sidebarWidth = getComputedStyle(
-        document.documentElement
-      ).getPropertyValue("--hypothesis-sidebar-width");
-
-      if (sidebarWidth) {
-        // Convert from "123px" to 123
-        const width = parseInt(sidebarWidth.replace("px", ""), 10);
-        if (!isNaN(width)) {
-          setHypothesisSidebarWidth(width);
-        }
-      }
-    };
-
-    // Check immediately
-    checkSidebarWidth();
-
-    // Create observer to watch for CSS variable changes
-    const observer = new MutationObserver(checkSidebarWidth);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["style"],
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div className={styles[".document-container"]}>
       <div className={styles["page-details"]}>
         <div className={styles["page-nav"]}>
-          <button
-            className="btn btn-black"
-            onClick={goToPreviousPage}
-            disabled={pageNumber === 1}
+          <div
+            className={`${styles["nav-controls"]} ${isHovering ? styles["visible"] : styles["hidden"]}`}
           >
-            ← Prev
-          </button>
-          <button
-            onClick={goToNextPage}
-            className="btn btn-black"
-            disabled={numPages ? pageNumber === numPages : false}
-          >
-            Next →
-          </button>
+            <button
+              className="btn btn-black"
+              onClick={goToPreviousPage}
+              disabled={pageNumber === 1}
+            >
+              ← Prev
+            </button>
+            <p className={styles["page-number"]}>
+              {pageNumber} of {numPages}
+            </p>
+            <button
+              onClick={goToNextPage}
+              className="btn btn-black"
+              disabled={numPages ? pageNumber === numPages : false}
+            >
+              Next →
+            </button>
+          </div>
         </div>
         <div className="top-info">
-          <p className={styles["page-info"]}>
-            Page {pageNumber} of {numPages}
-          </p>
           <PageNavigationForm
             numPages={numPages}
             onPageSubmit={handlePageSubmit}
@@ -179,26 +161,24 @@ function PDFViewer({ file }: PDFViewerProps) {
         </div>
       </div>
       <div
-        className={styles["pdf-document"]}
-        ref={containerRef}
-        style={{
-          height: containerHeight,
-          // Adjust width when hypothesis sidebar is present
-          marginRight: hypothesisSidebarWidth
-            ? `${hypothesisSidebarWidth}px`
-            : "0",
-        }}
+        className={styles["pdf-wrapper"]}
+        style={{ height: containerHeight }}
       >
-        <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-          <Page
-            pageNumber={pageNumber}
-            width={
-              containerWidth
-                ? Math.min(containerWidth - hypothesisSidebarWidth, maxWidth)
-                : maxWidth
-            }
-          />
-        </Document>
+        <div
+          className={styles["pdf-document"]}
+          ref={containerRef}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+            <Page
+              pageNumber={pageNumber}
+              width={
+                containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth
+              }
+            />
+          </Document>
+        </div>
       </div>
     </div>
   );
