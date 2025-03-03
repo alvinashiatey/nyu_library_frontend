@@ -35,7 +35,9 @@ function innitAnnotate() {
       document.body.appendChild(script);
 
       // Set up observer to detect when hypothesis sidebar appears
-      setupHypothesisSidebarObserver();
+      setTimeout(() => {
+        setupHypothesisSidebarObserver();
+      }, 5000);
     }
   });
 }
@@ -88,13 +90,7 @@ function updateSidebarWidthVariable(element: Element) {
 }
 
 async function main() {
-  // const container = document.getElementById("pdf-container") as HTMLDivElement;
-  // const pdfUrl = container.dataset.url;
-  // await annotatePdf(pdfUrl, container);
-
   innitAnnotate();
 }
 
 main();
-
-console.log("Annotating PDFs");
