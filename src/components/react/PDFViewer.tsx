@@ -22,7 +22,6 @@ function PDFViewer({ file }: PDFViewerProps) {
   const [containerHeight, setContainerHeight] =
     useState<string>("calc(100vh - 5rem)");
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isHovering, setIsHovering] = useState<boolean>(false);
 
   useEffect(() => {
     const calculateHeight = () => {
@@ -66,14 +65,6 @@ function PDFViewer({ file }: PDFViewerProps) {
     const url = new URL(window.location.href);
     url.searchParams.set("page", newValue.toString());
     window.history.pushState({}, "", url);
-  };
-
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovering(false);
   };
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
@@ -131,9 +122,7 @@ function PDFViewer({ file }: PDFViewerProps) {
     <div className={styles[".document-container"]}>
       <div className={styles["page-details"]}>
         <div className={styles["page-nav"]}>
-          <div
-            className={`${styles["nav-controls"]} ${isHovering ? styles["visible"] : styles["hidden"]}`}
-          >
+          <div className={styles["nav-controls"]}>
             <button
               className="btn btn-black"
               onClick={goToPreviousPage}
@@ -161,24 +150,18 @@ function PDFViewer({ file }: PDFViewerProps) {
         </div>
       </div>
       <div
-        className={styles["pdf-wrapper"]}
+        className={styles["pdf-document"]}
+        ref={containerRef}
         style={{ height: containerHeight }}
       >
-        <div
-          className={styles["pdf-document"]}
-          ref={containerRef}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page
-              pageNumber={pageNumber}
-              width={
-                containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth
-              }
-            />
-          </Document>
-        </div>
+        <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+          <Page
+            pageNumber={pageNumber}
+            width={
+              containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth
+            }
+          />
+        </Document>
       </div>
     </div>
   );
