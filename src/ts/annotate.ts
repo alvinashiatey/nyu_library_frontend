@@ -33,8 +33,58 @@ function innitAnnotate() {
       script.src = "https://hypothes.is/embed.js";
       script.async = true;
       document.body.appendChild(script);
+
+      // Set up observer to detect when hypothesis sidebar appears
+      setupHypothesisSidebarObserver();
     }
   });
+}
+
+function setupHypothesisSidebarObserver() {
+  // Create a MutationObserver to watch for the sidebar element
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === "childList") {
+        const hypothesisSidebar = document.querySelector("hypothesis-sidebar");
+        if (hypothesisSidebar) {
+          // Set up a ResizeObserver to track sidebar width changes
+          trackHypothesisSidebarWidth(hypothesisSidebar);
+          // We found what we were looking for, disconnect the observer
+          observer.disconnect();
+          break;
+        }
+      }
+    }
+  });
+
+  // Start observing the document with the configured parameters
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+function trackHypothesisSidebarWidth(sidebarElement: Element) {
+  // Initial measurement and CSS variable setting
+  updateSidebarWidthVariable(sidebarElement);
+
+  // Set up ResizeObserver to track width changes
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      updateSidebarWidthVariable(entry.target);
+    }
+  });
+
+  resizeObserver.observe(sidebarElement);
+}
+
+function updateSidebarWidthVariable(element: Element) {
+  // Get the current width of the hypothesis sidebar
+  const width = element.getBoundingClientRect().width;
+
+  // Set a CSS variable at the document root level
+  document.documentElement.style.setProperty(
+    "--hypothesis-sidebar-width",
+    `${width}px`
+  );
+  console.log("Hypothesis sidebar width set to", width, "px");
 }
 
 async function main() {

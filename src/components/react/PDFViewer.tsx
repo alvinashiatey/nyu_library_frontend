@@ -22,6 +22,8 @@ function PDFViewer({ file }: PDFViewerProps) {
   const [containerHeight, setContainerHeight] =
     useState<string>("calc(100vh - 5rem)");
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [hypothesisSidebarWidth, setHypothesisSidebarWidth] =
+    useState<number>(0);
 
   useEffect(() => {
     const calculateHeight = () => {
@@ -118,6 +120,35 @@ function PDFViewer({ file }: PDFViewerProps) {
     updateURL(pageNum);
   };
 
+  useEffect(() => {
+    // Function to read and update the hypothesis sidebar width state
+    const checkSidebarWidth = () => {
+      const sidebarWidth = getComputedStyle(
+        document.documentElement
+      ).getPropertyValue("--hypothesis-sidebar-width");
+
+      if (sidebarWidth) {
+        // Convert from "123px" to 123
+        const width = parseInt(sidebarWidth.replace("px", ""), 10);
+        if (!isNaN(width)) {
+          setHypothesisSidebarWidth(width);
+        }
+      }
+    };
+
+    // Check immediately
+    checkSidebarWidth();
+
+    // Create observer to watch for CSS variable changes
+    const observer = new MutationObserver(checkSidebarWidth);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["style"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className={styles[".document-container"]}>
       <div className={styles["page-details"]}>
@@ -150,13 +181,21 @@ function PDFViewer({ file }: PDFViewerProps) {
       <div
         className={styles["pdf-document"]}
         ref={containerRef}
-        style={{ height: containerHeight }}
+        style={{
+          height: containerHeight,
+          // Adjust width when hypothesis sidebar is present
+          marginRight: hypothesisSidebarWidth
+            ? `${hypothesisSidebarWidth}px`
+            : "0",
+        }}
       >
         <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
           <Page
             pageNumber={pageNumber}
             width={
-              containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth
+              containerWidth
+                ? Math.min(containerWidth - hypothesisSidebarWidth, maxWidth)
+                : maxWidth
             }
           />
         </Document>
