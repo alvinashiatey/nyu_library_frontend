@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import styles from "./PDFViewer.module.css";
@@ -11,9 +12,43 @@ interface PDFViewerProps {
   file: string;
 }
 
+const maxWidth = 800;
+const resizeObserverOptions = {};
+
 function PDFViewer({ file }: PDFViewerProps) {
   const [numPages, setNumPages] = useState<number>();
   const [pageNumber, setPageNumber] = useState<number>(1);
+  const [containerWidth, setContainerWidth] = useState<number>();
+  const [containerHeight, setContainerHeight] =
+    useState<string>("calc(100vh - 5rem)");
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const calculateHeight = () => {
+      const headerHeight = document.querySelector("header")?.clientHeight || 0;
+      const newHeight = `calc(100vh - ${headerHeight}px)`;
+      setContainerHeight(newHeight);
+    };
+
+    // Calculate on initial render
+    calculateHeight();
+
+    // Recalculate if window is resized
+    window.addEventListener("resize", calculateHeight);
+
+    // Clean up
+    return () => window.removeEventListener("resize", calculateHeight);
+  }, []);
+
+  const onResize = useCallback<ResizeObserverCallback>((entries) => {
+    const [entry] = entries;
+
+    if (entry) {
+      setContainerWidth(entry.contentRect.width);
+    }
+  }, []);
+
+  useResizeObserver(containerRef.current, resizeObserverOptions, onResize);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -112,9 +147,18 @@ function PDFViewer({ file }: PDFViewerProps) {
           />
         </div>
       </div>
-      <div className={styles["pdf-document"]}>
+      <div
+        className={styles["pdf-document"]}
+        ref={containerRef}
+        style={{ height: containerHeight }}
+      >
         <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-          <Page pageNumber={pageNumber} />
+          <Page
+            pageNumber={pageNumber}
+            width={
+              containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth
+            }
+          />
         </Document>
       </div>
     </div>

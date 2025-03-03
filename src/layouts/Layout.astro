@@ -105,6 +105,25 @@ const { title } = Astro.props;
     p {
       line-height: 120%;
     }
+
+    .react-pdf__Document {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .react-pdf__Page {
+      padding-block-end: 1rem;
+    }
+
+    .react-pdf__Page__canvas {
+      padding: 0.5rem;
+      border-radius: 5px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    }
+    .react-pdf__message {
+      padding: 20px;
+      color: white;
+    }
   </style>
 
 
