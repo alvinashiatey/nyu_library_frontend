@@ -37,7 +37,7 @@ function innitAnnotate() {
       // Set up observer to detect when hypothesis sidebar appears
       setTimeout(() => {
         setupHypothesisSidebarObserver();
-      }, 5000);
+      }, 15000);
     }
   });
 }
