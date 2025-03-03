@@ -43,13 +43,40 @@
   border-radius: 4px;
 }
 
-.pdf-document {
+/* Add these new classes for nav-controls visibility */
+.visible {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.nav-controls:hover {
+  opacity: 1;
+  visibility: visible;
+}
+
+.pdf-wrapper {
   width: 100%;
   height: calc(100vh - 5rem);
   overflow: scroll;
   display: flex;
   justify-content: center;
-  padding-block: 1rem;
+}
+
+.pdf-document {
+  width: 60%;
+  height: inherit;
+  padding: 1rem;
 }
 
 .form {
