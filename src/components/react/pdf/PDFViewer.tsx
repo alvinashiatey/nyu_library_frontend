@@ -3,7 +3,7 @@ import { Document, Page, pdfjs } from "react-pdf";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import styles from "./PDFViewer.module.css";
+import styles from "../PDFViewer.module.css";
 import PageNavigationForm from "./PageNavigationForm";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;

@@ -1,0 +1,26 @@
+---
+import type { Artwork } from "@/types";
+import ArtworkCard from "./ArtworkCard.astro";
+const { artworks } = Astro.props as { artworks: Artwork[] };
+---
+
+<div class="artworks">
+  {artworks.map((artwork) => <ArtworkCard artwork={artwork} />)}
+</div>
+
+<style>
+  .artworks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .image {
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+</style>

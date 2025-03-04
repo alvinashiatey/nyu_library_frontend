@@ -1,4 +1,4 @@
-export interface Book {
+export interface BaseMedia {
   title: string;
   slug: string;
   date: string;
@@ -10,6 +10,12 @@ export interface Book {
   }[];
 }
 
+export interface Book extends BaseMedia {}
+
+export interface Artwork extends BaseMedia {
+  is3d: string;
+}
+
 export interface About {
   title: string;
   text: string;
@@ -17,5 +23,5 @@ export interface About {
 
 export interface ApiResponse {
   code: number;
-  result: Book[] | About | null;
+  result: Book[] | About | Artwork[] | null;
 }

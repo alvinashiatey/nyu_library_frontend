@@ -1,5 +1,10 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { fetchArtworks } from "@data/api";
+import Gallery from "@components/Gallery.astro";
+import type { Artwork } from "@/types";
+
+const artworks: Artwork[] = await fetchArtworks();
 ---
 
 <Layout title="Gallery">
@@ -10,7 +15,7 @@ import Layout from "@layouts/Layout.astro";
       </div>
 
       <div class="center">
-        <h1>Books</h1>
+        <h1>Gallery</h1>
       </div>
 
       <div class="right">
@@ -45,7 +50,7 @@ import Layout from "@layouts/Layout.astro";
       </div>
     </div>
 
-    <p>Gallery</p>
+    <Gallery artworks={artworks} />
   </main>
 </Layout>
 
@@ -60,5 +65,34 @@ import Layout from "@layouts/Layout.astro";
     display: flex;
     justify-content: space-between;
     padding: 1rem;
+  }
+
+  .filter-container {
+    display: flex;
+    gap: 1rem;
+    padding-inline: 1rem;
+
+    select {
+      padding-inline: 0.5rem;
+      border-radius: 0.5rem;
+      border: none;
+    }
+  }
+
+  .btn-svg {
+    width: 100%;
+    height: 100%;
+
+    svg {
+      border-radius: 0.5rem;
+      background-color: black;
+      width: 2rem;
+      height: 2rem;
+      fill: none;
+      stroke: beige;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
   }
 </style>

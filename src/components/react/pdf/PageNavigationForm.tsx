@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./PDFViewer.module.css";
+import styles from "../pdf/PDFViewer.module.css";
 
 interface PageNavigationFormProps {
   numPages: number | undefined;

@@ -1,4 +1,4 @@
-import type { Book, About, ApiResponse } from "@/types.ts";
+import type { Book, About, ApiResponse, Artwork } from "@/types.ts";
 
 const api =
   process.env.NODE_ENV === "PROD"
@@ -75,6 +75,39 @@ export async function fetchAbout(): Promise<About | null> {
     }
 
     return null;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function fetchArtworks(): Promise<Artwork[]> {
+  const query = "page('artworks').children.sortBy('date', 'desc')";
+  const select = {
+    title: true,
+    slug: true,
+    date: "page.date.toDate('d.m.Y')",
+    description: true,
+    stack: true,
+    is3d: true,
+    files: {
+      query: "page.files",
+      select: {
+        type: true,
+        url: true,
+      },
+    },
+    models: {
+      query: "page.models",
+    },
+  };
+
+  try {
+    const response = await fetchQuery({ query, select });
+    if (response && response.code === 200) {
+      return response.result as Artwork[];
+    }
+    return [];
   } catch (error) {
     console.error(error);
     throw error;

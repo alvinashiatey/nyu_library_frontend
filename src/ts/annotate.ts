@@ -34,7 +34,6 @@ function innitAnnotate() {
         script.src = "https://hypothes.is/embed.js";
         script.async = true;
         document.body.appendChild(script);
-        (el.target as HTMLElement)?.style.setProperty("visibility", "hidden");
       }
     });
 }
