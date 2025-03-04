@@ -23,15 +23,9 @@ const { books, stack } = Astro.props as { books: Book[]; stack: string };
 
 <Layout title={`Stack ${stack} - Digital Library`}>
   <main>
-    <StackView books={books} stack={stack} client:load />
+    <StackView books={books} stack={stack} />
   </main>
 </Layout>
-
-<!-- <footer>
-  <div class="right">
-    <h2 class="btn btn-white-50">You are now exploring Stack 2</h2>
-  </div>
-</footer> -->
 
 <style>
   main {

@@ -11,24 +11,12 @@
     "noEmit": true,
     "isolatedModules": true,
     "paths": {
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@layouts/*": [
-        "src/layouts/*"
-      ],
-      "@data/*": [
-        "src/data/*"
-      ],
-      "@/*": [
-        "src/*"
-      ],
-      "@ts/*": [
-        "src/ts/*"
-      ],
-      "@css/*": [
-        "src/css/*"
-      ]
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@data/*": ["src/data/*"],
+      "@/*": ["src/*"],
+      "@ts/*": ["src/ts/*"],
+      "@css/*": ["src/css/*"]
     },
     "jsx": "react-jsx",
     "jsxImportSource": "react"
