@@ -3,6 +3,7 @@ import type { InferGetStaticParamsType } from "astro";
 import Layout from "@layouts/Layout.astro";
 import { fetchArtworks } from "@data/api";
 import type { Artwork } from "@/types";
+import GalleryView from "@components/GalleryView.astro";
 
 export async function getStaticPaths() {
   const artworks = await fetchArtworks();
@@ -15,27 +16,11 @@ export async function getStaticPaths() {
 type Params = InferGetStaticParamsType<typeof getStaticPaths>;
 const { slug } = Astro.params as Params;
 const { artwork } = Astro.props as { artwork: Artwork };
-const pdfUrl = artwork?.files[0].url;
 ---
 
 <Layout title="Digital Library">
   <main>
-    <header>
-      <div class="left">
-        <a href="/" class="btn btn-black">OFFICE00</a>
-      </div>
-
-      <div class="center">
-        <h1>{artwork?.title}</h1>
-      </div>
-
-      <div class="right">
-        <button class="btn btn-black" id="hypothesis">Annotate</button>
-      </div>
-    </header>
-    <div class="pdf">
-      <div id="viewerContainer" data-pdf={pdfUrl}></div>
-    </div>
+    <GalleryView artwork={artwork} />
   </main>
 </Layout>
 

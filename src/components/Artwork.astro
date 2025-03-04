@@ -1,0 +1,127 @@
+---
+import type { Artwork } from "@/types";
+import { Image } from "astro:assets";
+import ModelViewerWrapper from "@components/react/model/ModelViewerWrapper";
+
+export interface Props {
+  artwork: Artwork;
+  thumbnailMode?: boolean;
+}
+
+const { artwork, thumbnailMode = true } = Astro.props;
+const is3D = artwork.is3d === "true";
+
+// Determine the primary file to display
+const primaryFile = is3D
+  ? artwork.files.find((file) =>
+      ["gltf", "glb", "obj", "fbx", "stl"].includes(
+        file.url.split(".").pop() || ""
+      )
+    )
+  : artwork.files.find((file) => file.type === "image");
+---
+
+<div class={`artwork ${!thumbnailMode ? "preview" : ""}`}>
+  <div class={`image ${!thumbnailMode ? "preview" : ""}`}>
+    {
+      is3D && primaryFile ? (
+        <ModelViewerWrapper
+          client:only="react"
+          modelUrl={primaryFile.url}
+          thumbnailMode={thumbnailMode}
+        >
+          <div slot="fallback">Loading</div>
+        </ModelViewerWrapper>
+      ) : (
+        artwork.files.map((file) =>
+          file.type === "image" ? (
+            <Image
+              src={file.url}
+              alt={artwork.title}
+              width={100}
+              height={100}
+              class={!thumbnailMode ? "preview" : ""}
+            />
+          ) : null
+        )
+      )
+    }
+  </div>
+
+  {
+    thumbnailMode && (
+      <div class="info">
+        <h3>{artwork.title}</h3>
+        {is3D && <span class="model-badge">3D Model</span>}
+        <p class="desc">{artwork.description}</p>
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .artwork {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+
+    &.preview {
+      height: 100vh;
+    }
+
+    .image {
+      aspect-ratio: 1/1;
+      width: 100%;
+      overflow: hidden;
+      background-color: #bebebe;
+      outline: 1px solid #bebebe30;
+      position: relative;
+
+      &.preview {
+        aspect-ratio: auto;
+        background-color: transparent;
+        outline: none;
+        height: 100%;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+
+        &.preview {
+          object-fit: contain;
+        }
+      }
+    }
+
+    .info {
+      position: relative;
+
+      h3 {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    .desc {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      line-clamp: 4;
+      overflow: hidden;
+    }
+
+    .model-badge {
+      display: inline-block;
+      background: #2563eb;
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+</style>

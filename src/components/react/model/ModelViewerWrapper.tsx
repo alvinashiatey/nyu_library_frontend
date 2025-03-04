@@ -12,7 +12,7 @@ export default function ModelViewerWrapper({
   modelUrl,
   thumbnailMode = false,
   width = "100%",
-  height = thumbnailMode ? "100%" : "400px",
+  height = "100%",
 }: ModelViewerWrapperProps) {
   // For thumbnails, we disable auto-rotation to save resources
   return (

@@ -1,29 +1,28 @@
 ---
-import type { Book } from "@/types";
-import BookCard from "./BookCard.astro";
-const { books, stack } = Astro.props as { books: Book[]; stack?: string };
-const paddedStack = Number(stack) < 10 ? `0${stack}` : stack;
-const background = `url(/public/range/r${paddedStack}.png)`;
+import type { Artwork } from "@/types";
+import ArtworkCard from "./ArtworkCard.astro";
+const { artwork } = Astro.props as {
+  artwork: Artwork;
+};
 ---
 
-<div class="books">
+<div class="gallery">
   <div class="container">
     <div class="preview">
-      <div class="image" style={{ backgroundImage: background }}></div>
+      <ArtworkCard artwork={artwork} thumbnailMode={false} />
     </div>
     <div class="content">
       <header>
         <div class="range">
-          <h2>
-            Range <span class="text-white-50">{paddedStack}</span>
-          </h2>
+          <h2>Gallery</h2>
         </div>
         <div class="back">
-          <a href="/" class="btn btn-black"> x </a>
+          <a href="/gallery" class="btn btn-black"> x </a>
         </div>
       </header>
-      <div class="books">
-        {books.map((book) => <BookCard book={book} />)}
+      <div class="artwork-info">
+        <h2>{artwork.title}</h2>
+        <p>{artwork.description}</p>
       </div>
     </div>
   </div>
@@ -64,11 +63,12 @@ const background = `url(/public/range/r${paddedStack}.png)`;
     width: 30%;
   }
 
-  .books {
+  .artwork-info {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     color: black;
     overflow: scroll;
+    padding: 1rem;
   }
 </style>
