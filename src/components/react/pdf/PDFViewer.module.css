@@ -68,7 +68,7 @@
 .pdf-wrapper {
   width: 100%;
   height: calc(100vh - 5rem);
-  overflow: scroll;
+  overflow: auto;
   display: flex;
   justify-content: center;
 }
