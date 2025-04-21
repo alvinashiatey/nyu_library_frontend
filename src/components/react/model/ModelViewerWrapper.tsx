@@ -21,7 +21,7 @@ export default function ModelViewerWrapper({
       width={width}
       height={height}
       autoRotate={!thumbnailMode}
-      backgroundColor={thumbnailMode ? "transparent" : "#f0f0f0"}
+      backgroundColor={thumbnailMode ? "transparent" : "#181818"}
     />
   );
 }

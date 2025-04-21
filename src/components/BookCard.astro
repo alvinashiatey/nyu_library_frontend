@@ -1,10 +1,10 @@
 ---
 import type { Book } from "@/types";
 import { Image } from "astro:assets";
-const { book } = Astro.props as { book: Book };
+const { book, isRange } = Astro.props as { book: Book , isRange?: boolean };
 ---
 <a href={`/book/${book.slug}`}>
-<div class="book">
+<div class={`book ${isRange ? "range" : ""}`}>
         <div class="image">
                 {
                         book.files.map((file)=>(
@@ -33,6 +33,12 @@ const { book } = Astro.props as { book: Book };
         flex-direction: column;
         gap: 1rem;
         padding: 1rem;
+                &.range {
+                        flex-direction: row;
+                        .image, .info {
+                                flex: 1;
+                        }
+                }
         
         .image {
           aspect-ratio: 1/1;

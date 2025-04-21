@@ -23,7 +23,7 @@ const { books, stack } = Astro.props as { books: Book[]; stack: string };
 
 <Layout title={`Stack ${stack} - Digital Library`}>
   <main>
-    <StackView books={books} stack={stack} />
+    <StackView books={books} stack={stack} isRange=true />
   </main>
 </Layout>
 

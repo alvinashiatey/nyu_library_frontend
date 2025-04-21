@@ -1,7 +1,7 @@
 ---
 import type { Book } from "@/types";
 import BookCard from "./BookCard.astro";
-const { books, stack } = Astro.props as { books: Book[]; stack?: string };
+const { books, stack, isRange } = Astro.props as { books: Book[]; stack?: string, isRange?: boolean };
 const paddedStack = Number(stack) < 10 ? `0${stack}` : stack;
 const background = `url(/public/range/r${paddedStack}.png)`;
 ---
@@ -19,11 +19,24 @@ const background = `url(/public/range/r${paddedStack}.png)`;
           </h2>
         </div>
         <div class="back">
-          <a href="/" class="btn btn-black"> x </a>
+          <a href="/" class="btn-svg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          </a>
         </div>
       </header>
       <div class="books">
-        {books.map((book) => <BookCard book={book} />)}
+        {books.map((book) => <BookCard book={book} isRange={isRange} />)}
       </div>
     </div>
   </div>
@@ -70,5 +83,21 @@ const background = `url(/public/range/r${paddedStack}.png)`;
     gap: 1rem;
     color: black;
     overflow: scroll;
+  }
+.btn-svg {
+    width: 100%;
+    height: 100%;
+
+    svg {
+      border-radius: 0.5rem;
+      background-color: black;
+      width: 2rem;
+      height: 2rem;
+      fill: none;
+      stroke: beige;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
   }
 </style>
